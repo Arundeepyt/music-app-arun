@@ -6,7 +6,7 @@
     <title>Arun Music Pro</title>
     <style>
         body { background: #080808; color: white; text-align: center; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
-        .player { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); padding: 40px; border-radius: 30px; width: 320px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        .player { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); padding: 40px; border-radius: 30px; width: 320px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; z-index: 10; }
         img { width: 220px; height: 220px; border-radius: 20px; object-fit: cover; margin-bottom: 20px; transition: 0.4s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(0, 255, 242, 0.3); }
         .playing img { transform: scale(1.05); box-shadow: 0 0 20px #00fff2; }
         h2 { font-weight: 300; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; color: #00fff2; text-shadow: 0 0 10px #00fff2; }
@@ -40,6 +40,16 @@
     </div>
 
     <script>
+        // Wrapping in an object to keep it organized
+        const musicPlayer = {
+            index: 0,
+            isPlaying: false,
+            songs: [
+                { name: "LEVELS", path: "music/Levels.mp3", img: "levels.jpeg" },
+                { name: "INVINCIBLE", path: "music/Invincible_1.mp3", img: "invincible.jpeg" }
+            ]
+        };
+
         const audio = document.getElementById("main-audio");
         const title = document.getElementById("title");
         const cover = document.getElementById("cover");
@@ -47,39 +57,20 @@
         const playBtn = document.getElementById("play-btn");
         const playerDiv = document.getElementById("player-div");
 
-        // --- PLAYLIST (MATCHED TO YOUR GITHUB PHOTOS) ---
-        const songs = [
-            { 
-                name: "LEVELS", 
-                path: "music/Levels.mp3", // Capital L
-                img: "levels.jpeg" 
-            },
-            { 
-                name: "INVINCIBLE", 
-                path: "music/Invincible_1.mp3", // Capital I (This was the problem!)
-                img: "invincible.jpeg" 
-            }
-        ];
-
-        let index = 0;
-        let isPlaying = false;
-
         function togglePlay() {
-            if (isPlaying) pauseSong();
+            if (musicPlayer.isPlaying) pauseSong();
             else playSong();
         }
 
         function playSong() {
-            isPlaying = true;
+            musicPlayer.isPlaying = true;
             playerDiv.classList.add('playing');
             playBtn.innerText = "⏸";
-            audio.play().catch(err => {
-                alert("Cannot find: " + songs[index].path + "\nCheck spelling on GitHub!");
-            });
+            audio.play().catch(err => console.log("Playback error: ", err));
         }
 
         function pauseSong() {
-            isPlaying = false;
+            musicPlayer.isPlaying = false;
             playerDiv.classList.remove('playing');
             playBtn.innerText = "▶";
             audio.pause();
@@ -93,14 +84,14 @@
         }
 
         function nextSong() {
-            index = (index + 1) % songs.length;
-            loadSong(songs[index]);
+            musicPlayer.index = (musicPlayer.index + 1) % musicPlayer.songs.length;
+            loadSong(musicPlayer.songs[musicPlayer.index]);
             playSong();
         }
 
         function prevSong() {
-            index = (index - 1 + songs.length) % songs.length;
-            loadSong(songs[index]);
+            musicPlayer.index = (musicPlayer.index - 1 + musicPlayer.songs.length) % musicPlayer.songs.length;
+            loadSong(musicPlayer.songs[musicPlayer.index]);
             playSong();
         }
 
@@ -110,7 +101,6 @@
         };
 
         audio.onended = nextSong;
-
     </script>
 </body>
 </html>
