@@ -3,80 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arun Deep | Reactive Music Player</title>
+    <title>Arundeep | Aesthetic Player</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
 
     <style>
-        body { background: #050505; color: white; text-align: center; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        :root {
+            --accent: #00fff2;
+            --bg: #0a0a0c;
+            --panel: rgba(20, 20, 25, 0.7);
+        }
+
+        body { 
+            background: var(--bg); 
+            color: white; 
+            font-family: 'Inter', 'Segoe UI', sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+        }
         
         .player { 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(20px); 
-            padding: 30px; 
-            border-radius: 40px; 
-            width: 320px; 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8); 
-            position: relative;
-            z-index: 10;
+            background: var(--panel); 
+            backdrop-filter: blur(30px); 
+            padding: 40px; 
+            border-radius: 50px; 
+            width: 300px; 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6); 
+            text-align: center;
         }
 
         .app-logo {
-            margin-bottom: 15px; font-size: 20px; font-weight: 900; letter-spacing: 5px;
-            background: linear-gradient(-45deg, #00fff2, #ff00ff, #00fff2);
-            background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: logoGradient 3s linear infinite;
+            font-size: 10px; font-weight: 700; letter-spacing: 8px; margin-bottom: 30px;
+            opacity: 0.5; text-transform: uppercase;
         }
 
-        @keyframes logoGradient { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-
-        /* VISUALIZER CANVAS */
-        #visualizer {
-            width: 100%;
-            height: 60px;
-            margin-bottom: 10px;
-            border-radius: 10px;
+        /* --- AESTHETIC COVER ART --- */
+        .img-area {
+            position: relative;
+            width: 240px; height: 240px;
+            margin: 0 auto 30px;
         }
 
         #cover { 
-            width: 200px; height: 200px; border-radius: 50%; object-fit: cover; 
-            margin-bottom: 20px; border: 3px solid rgba(0, 255, 242, 0.2); transition: 0.5s;
+            width: 100%; height: 100%; border-radius: 40px; 
+            object-fit: cover; 
+            transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
         
-        .playing #cover { animation: spin 12s linear infinite; border-color: #00fff2; box-shadow: 0 0 30px rgba(0, 255, 242, 0.3); }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        h2 { font-weight: 400; font-size: 16px; letter-spacing: 1px; margin-bottom: 20px; color: #00fff2; text-shadow: 0 0 10px rgba(0, 255, 242, 0.5); }
-
-        .progress-container { width: 100%; height: 5px; background: rgba(255, 255, 255, 0.1); margin: 20px 0; cursor: pointer; border-radius: 10px; }
-        .progress-bar { height: 100%; width: 0%; background: #00fff2; border-radius: 10px; position: relative; }
-        .progress-bar::after { content: ''; position: absolute; right: -5px; top: -3px; width: 12px; height: 12px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px #00fff2; }
-
-        .controls { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; }
-        
-        .file-label, button { 
-            cursor: pointer; width: 45px; height: 45px; border-radius: 50%; border: none;
-            background: rgba(255,255,255,0.05); display: flex; align-items: center; 
-            justify-content: center; color: white; transition: 0.3s;
+        .playing #cover { 
+            transform: scale(1.05); 
+            box-shadow: 0 20px 50px rgba(0, 255, 242, 0.2); 
         }
 
-        .btn-main { width: 70px; height: 70px; font-size: 22px; color: #000; background: #00fff2; box-shadow: 0 0 20px rgba(0, 255, 242, 0.4); }
-        button:hover, .file-label:hover { transform: translateY(-3px); background: #fff; color: #000; }
+        h2 { font-weight: 500; font-size: 18px; margin: 0; letter-spacing: -0.5px; }
+        p#artist { font-size: 12px; opacity: 0.4; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- MINIMAL PROGRESS --- */
+        .progress-container { 
+            width: 100%; height: 4px; background: rgba(255, 255, 255, 0.05); 
+            margin: 35px 0 25px; cursor: pointer; border-radius: 10px; position: relative;
+        }
+        .progress-bar { 
+            height: 100%; width: 0%; background: var(--accent); 
+            border-radius: 10px; box-shadow: 0 0 15px var(--accent);
+            transition: width 0.1s linear;
+        }
+
+        /* --- SOFT CONTROLS --- */
+        .controls { display: flex; justify-content: space-between; align-items: center; }
+        
+        button, .file-label { 
+            cursor: pointer; background: none; border: none; color: white; 
+            font-size: 18px; transition: 0.3s; opacity: 0.6;
+        }
+
+        .file-label { display: flex; align-items: center; justify-content: center; }
+
+        .btn-main { 
+            width: 70px; height: 70px; border-radius: 50%; opacity: 1;
+            background: white; color: black; font-size: 20px;
+            box-shadow: 0 10px 25px rgba(255,255,255,0.2);
+        }
+
+        button:hover, .file-label:hover { opacity: 1; transform: translateY(-2px); }
+        .btn-main:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(255,255,255,0.3); }
         
         input[type="file"] { display: none; }
+
+        /* VISUALIZER WAVE */
+        #visualizer { width: 100%; height: 30px; opacity: 0.3; }
     </style>
 </head>
 <body>
 
     <div class="player" id="player-div">
-        <div class="app-logo">ARUNDEEP</div>
+        <div class="app-logo">Arundeep Music</div>
+
+        <div class="img-area">
+            <img src="levels.jpeg" id="cover">
+        </div>
+
+        <h2 id="title">LEVELS</h2>
+        <p id="artist">Now Playing</p>
 
         <canvas id="visualizer"></canvas>
-
-        <img src="levels.jpeg" id="cover">
-        <h2 id="title">LEVELS</h2>
         
         <div class="progress-container" id="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
@@ -86,10 +123,10 @@
         
         <div class="controls">
             <label class="file-label"><i class="fa-solid fa-plus"></i><input type="file" id="file-input" accept="audio/*"></label>
-            <button onclick="prevSong()"><i class="fa-solid fa-backward"></i></button>
+            <button onclick="prevSong()"><i class="fa-solid fa-backward-step"></i></button>
             <button class="btn-main" id="play-btn" onclick="togglePlay()"><i class="fa-solid fa-play"></i></button>
-            <button onclick="nextSong()"><i class="fa-solid fa-forward"></i></button>
-            <button onclick="downloadSong()"><i class="fa-solid fa-download"></i></button>
+            <button onclick="nextSong()"><i class="fa-solid fa-forward-step"></i></button>
+            <button onclick="downloadSong()"><i class="fa-solid fa-heart"></i></button>
         </div>
     </div>
 
@@ -109,11 +146,9 @@
             { name: "INVINCIBLE", path: "music/Invincible_1.mp3", img: "invincible.jpeg" }
         ];
 
-        let index = 0;
-        let isPlaying = false;
+        let index = 0; let isPlaying = false;
         let audioContext, analyzer, source;
 
-        // Visualizer setup
         function setupVisualizer() {
             if (audioContext) return;
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -121,7 +156,7 @@
             source = audioContext.createMediaElementSource(audio);
             source.connect(analyzer);
             analyzer.connect(audioContext.destination);
-            analyzer.fftSize = 64;
+            analyzer.fftSize = 128;
             draw();
         }
 
@@ -129,16 +164,14 @@
             const bufferLength = analyzer.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
             analyzer.getByteFrequencyData(dataArray);
-
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const barWidth = (canvas.width / bufferLength) * 2;
+            let barWidth = (canvas.width / bufferLength) * 2.5;
             let x = 0;
-
             for (let i = 0; i < bufferLength; i++) {
-                const barHeight = dataArray[i] / 5;
-                ctx.fillStyle = `rgba(0, 255, 242, ${barHeight / 20})`;
-                ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
-                x += barWidth;
+                let barHeight = dataArray[i] / 6;
+                ctx.fillStyle = `rgba(255, 255, 255, ${barHeight / 50})`;
+                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                x += barWidth + 1;
             }
             requestAnimationFrame(draw);
         }
@@ -147,7 +180,6 @@
             const file = e.target.files[0];
             if (!file) return;
             const fileURL = URL.createObjectURL(file);
-            
             window.jsmediatags.read(file, {
                 onSuccess: function(tag) {
                     let art = "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=300";
@@ -158,8 +190,7 @@
                         art = `data:${pic.format};base64,${window.btoa(base64)}`;
                     }
                     songs.push({ name: file.name.split('.')[0], path: fileURL, img: art });
-                    index = songs.length - 1;
-                    loadSong(songs[index]); playSong();
+                    index = songs.length - 1; loadSong(songs[index]); playSong();
                 },
                 onError: () => { 
                     songs.push({ name: file.name.split('.')[0], path: fileURL, img: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=300" });
@@ -191,7 +222,6 @@
         function loadSong(s) { title.innerText = s.name; cover.src = s.img; audio.src = s.path; }
         function nextSong() { index = (index + 1) % songs.length; loadSong(songs[index]); playSong(); }
         function prevSong() { index = (index - 1 + songs.length) % songs.length; loadSong(songs[index]); playSong(); }
-        function downloadSong() { const a = document.createElement('a'); a.href = audio.src; a.download = title.innerText; a.click(); }
 
         audio.ontimeupdate = (e) => {
             const { duration, currentTime } = e.srcElement;
