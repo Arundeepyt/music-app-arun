@@ -7,7 +7,6 @@
     <style>
         body { background: #080808; color: white; text-align: center; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
         
-        /* Glassmorphism Container */
         .player { 
             background: rgba(255, 255, 255, 0.05); 
             backdrop-filter: blur(15px); 
@@ -18,19 +17,25 @@
             box-shadow: 0 25px 50px rgba(0,0,0,0.5); 
         }
 
-        /* NEW HEADER STYLE */
-        .app-header {
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .app-header h1 {
-            font-size: 18px;
-            margin: 0;
-            color: #ee7752; /* Matches the button gradient */
-            letter-spacing: 3px;
+        /* --- COLOR CHANGING LOGO --- */
+        .app-logo {
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 5px;
             text-transform: uppercase;
-            font-weight: 700;
+            /* Gradient Text Effect */
+            background: linear-gradient(-45deg, #00fff2, #e73c7e, #23d5ab, #ee7752);
+            background-size: 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoGradient 4s ease infinite;
+        }
+
+        @keyframes logoGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         img { 
@@ -46,7 +51,7 @@
         
         .playing img { transform: scale(1.05); box-shadow: 0 0 20px #00fff2; }
 
-        h2 { font-weight: 300; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; color: #00fff2; text-shadow: 0 0 10px #00fff2; }
+        h2 { font-weight: 300; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; color: #fff; }
 
         .progress-container { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); margin: 20px 0; cursor: pointer; border-radius: 10px; }
         .progress-bar { height: 100%; width: 0%; background: #00fff2; box-shadow: 0 0 15px #00fff2; border-radius: 10px; transition: width 0.1s linear; }
@@ -82,9 +87,7 @@
 <body>
 
     <div class="player" id="player-div">
-        <div class="app-header">
-            <h1>ARUNDEEP</h1>
-        </div>
+        <div class="app-logo">ARUNDEEP</div>
 
         <img src="levels.jpeg" id="cover">
         <h2 id="title">LEVELS</h2>
