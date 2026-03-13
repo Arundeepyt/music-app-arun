@@ -1,110 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arun Music Pro</title>
-    <style>
-        body { background: #080808; color: white; text-align: center; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
-        .player { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); padding: 40px; border-radius: 30px; width: 320px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        img { width: 220px; height: 220px; border-radius: 20px; object-fit: cover; margin-bottom: 20px; transition: 0.4s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(0, 255, 242, 0.3); }
-        .playing img { transform: scale(1.05); box-shadow: 0 0 20px #00fff2; }
-        h2 { font-weight: 300; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; color: #00fff2; text-shadow: 0 0 10px #00fff2; }
-        .progress-container { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); margin: 20px 0; cursor: pointer; border-radius: 10px; }
-        .progress-bar { height: 100%; width: 0%; background: #00fff2; box-shadow: 0 0 15px #00fff2; border-radius: 10px; transition: width 0.1s linear; }
-        .controls { display: flex; justify-content: center; align-items: center; gap: 10px; }
-        button { cursor: pointer; border: none; border-radius: 50%; color: white; background: rgba(255,255,255,0.1); transition: 0.3s; display: flex; align-items: center; justify-content: center; }
-        .btn-main { width: 70px; height: 70px; font-size: 24px; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: grad 5s infinite; }
-        .btn-side { width: 50px; height: 50px; font-size: 18px; }
-        button:hover { transform: scale(1.1); background: #00fff2; color: black; box-shadow: 0 0 15px #00fff2; }
-        @keyframes grad { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
-    </style>
-</head>
-<body>
+<script>
+    const audio = document.getElementById("main-audio");
+    const title = document.getElementById("title");
+    const cover = document.getElementById("cover");
+    const progressBar = document.getElementById("progress-bar");
+    const playBtn = document.getElementById("play-btn");
 
-    <div class="player" id="player-div">
-        <img src="levels.jpeg" id="cover">
-        <h2 id="title">LEVELS</h2>
-        
-        <div class="progress-container" id="progress-container">
-            <div class="progress-bar" id="progress-bar"></div>
-        </div>
-        
-        <audio id="main-audio" src="music/Levels.mp3"></audio> 
-        
-        <div class="controls">
-            <button class="btn-side" onclick="prevSong()">⏮</button>
-            <button class="btn-main" id="play-btn" onclick="togglePlay()">▶</button>
-            <button class="btn-side" onclick="nextSong()">⏭</button>
-        </div>
-    </div>
-
-    <script>
-        const audio = document.getElementById("main-audio");
-        const title = document.getElementById("title");
-        const cover = document.getElementById("cover");
-        const progressBar = document.getElementById("progress-bar");
-        const playBtn = document.getElementById("play-btn");
-        const playerDiv = document.getElementById("player-div");
-
-        // --- PLAYLIST ---
-        // DOUBLE CHECK THESE NAMES ON GITHUB
-        const songs = [
-            { name: "LEVELS", path: "music/Levels.mp3", img: "levels.jpeg" },
-            { name: "INVINCIBLE", path: "music/invincible_1.mp3", img: "invincible.jpeg" }
-        ];
-
-        let index = 0;
-        let isPlaying = false;
-
-        function togglePlay() {
-            if (isPlaying) pauseSong();
-            else playSong();
+    // I added several common ways you might have named the file
+    const songs = [
+        { 
+            name: "LEVELS", 
+            path: "music/Levels.mp3", 
+            img: "levels.jpeg" 
+        },
+        { 
+            name: "INVINCIBLE", 
+            path: "music/invincible_1.mp3", // Try this first
+            img: "invincible.jpeg" 
         }
+    ];
 
-        function playSong() {
-            isPlaying = true;
-            playerDiv.classList.add('playing');
-            playBtn.innerText = "⏸";
-            audio.play().catch(err => {
-                console.error("Error playing audio: ", err);
-                alert("File not found! Check your GitHub filenames.");
-            });
-        }
+    let index = 0;
+    let isPlaying = false;
 
-        function pauseSong() {
-            isPlaying = false;
-            playerDiv.classList.remove('playing');
-            playBtn.innerText = "▶";
+    function loadSong(song) {
+        title.innerText = song.name;
+        cover.src = song.img;
+        audio.src = song.path;
+        console.log("Attempting to load: " + song.path);
+    }
+
+    function togglePlay() {
+        if (isPlaying) {
             audio.pause();
+            isPlaying = false;
+            playBtn.innerText = "▶";
+        } else {
+            audio.play().catch(error => {
+                console.log("Playback failed. Checking for naming errors...");
+                // If invincible_1.mp3 fails, try a different version automatically
+                if(index === 1) {
+                    audio.src = "music/Invincible_1.mp3"; // Try with Capital I
+                    audio.play().catch(e => alert("Could not find the file. Check your GitHub music folder spelling!"));
+                }
+            });
+            isPlaying = true;
+            playBtn.innerText = "⏸";
         }
+    }
 
-        function loadSong(song) {
-            title.innerText = song.name;
-            cover.src = song.img;
-            audio.src = song.path;
-            console.log("Loading: " + song.path);
-        }
+    function nextSong() {
+        index = (index + 1) % songs.length;
+        loadSong(songs[index]);
+        // Reset play state to ensure it tries to play the new source
+        isPlaying = false; 
+        togglePlay();
+    }
 
-        function nextSong() {
-            index = (index + 1) % songs.length;
-            loadSong(songs[index]);
-            playSong();
-        }
+    function prevSong() {
+        index = (index - 1 + songs.length) % songs.length;
+        loadSong(songs[index]);
+        isPlaying = false;
+        togglePlay();
+    }
 
-        function prevSong() {
-            index = (index - 1 + songs.length) % songs.length;
-            loadSong(songs[index]);
-            playSong();
-        }
+    audio.ontimeupdate = (e) => {
+        const { duration, currentTime } = e.srcElement;
+        if (duration) progressBar.style.width = `${(currentTime / duration) * 100}%`;
+    };
 
-        audio.ontimeupdate = (e) => {
-            const { duration, currentTime } = e.srcElement;
-            if (duration) progressBar.style.width = `${(currentTime / duration) * 100}%`;
-        };
-
-        audio.onended = nextSong;
-
-    </script>
-</body>
-</html>
+    audio.onended = nextSong;
+</script>
