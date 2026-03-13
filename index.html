@@ -3,18 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arun Music Pro</title>
+    <title>Arundeep Music App</title>
     <style>
         body { background: #080808; color: white; text-align: center; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
         
+        /* Glassmorphism Container */
         .player { 
             background: rgba(255, 255, 255, 0.05); 
             backdrop-filter: blur(15px); 
-            padding: 40px; 
+            padding: 30px 40px 40px 40px; 
             border-radius: 30px; 
             width: 320px; 
             border: 1px solid rgba(255, 255, 255, 0.1); 
             box-shadow: 0 25px 50px rgba(0,0,0,0.5); 
+        }
+
+        /* NEW HEADER STYLE */
+        .app-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .app-header h1 {
+            font-size: 18px;
+            margin: 0;
+            color: #ee7752; /* Matches the button gradient */
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
         }
 
         img { 
@@ -66,6 +82,10 @@
 <body>
 
     <div class="player" id="player-div">
+        <div class="app-header">
+            <h1>ARUNDEEP</h1>
+        </div>
+
         <img src="levels.jpeg" id="cover">
         <h2 id="title">LEVELS</h2>
         
@@ -91,7 +111,6 @@
         const playBtn = document.getElementById("play-btn");
         const playerDiv = document.getElementById("player-div");
 
-        // --- PLAYLIST (EXACT FILENAMES) ---
         const songs = [
             { name: "LEVELS", path: "music/Levels.mp3", img: "levels.jpeg" },
             { name: "INVINCIBLE", path: "music/Invincible_1.mp3", img: "invincible.jpeg" }
@@ -147,13 +166,11 @@
             document.body.removeChild(link);
         }
 
-        // Progress Update
         audio.ontimeupdate = (e) => {
             const { duration, currentTime } = e.srcElement;
             if (duration) progressBar.style.width = `${(currentTime / duration) * 100}%`;
         };
 
-        // Auto-Play Next Song
         audio.onended = nextSong;
 
     </script>
