@@ -16,4 +16,101 @@
         button { cursor: pointer; border: none; border-radius: 50%; color: white; background: rgba(255,255,255,0.1); transition: 0.3s; display: flex; align-items: center; justify-content: center; }
         .btn-main { width: 70px; height: 70px; font-size: 24px; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: grad 5s infinite; }
         .btn-side { width: 50px; height: 50px; font-size: 18px; }
-        button:hover { transform: scale(1.1); background: #00fff2; color: black; box-shadow: 0 0 15
+        button:hover { transform: scale(1.1); background: #00fff2; color: black; box-shadow: 0 0 15px #00fff2; }
+        @keyframes grad { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+    </style>
+</head>
+<body>
+
+    <div class="player" id="player-div">
+        <img src="levels.jpeg" id="cover">
+        <h2 id="title">LEVELS</h2>
+        
+        <div class="progress-container" id="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <audio id="main-audio" src="music/Levels.mp3"></audio> 
+        
+        <div class="controls">
+            <button class="btn-side" onclick="prevSong()">⏮</button>
+            <button class="btn-main" id="play-btn" onclick="togglePlay()">▶</button>
+            <button class="btn-side" onclick="nextSong()">⏭</button>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById("main-audio");
+        const title = document.getElementById("title");
+        const cover = document.getElementById("cover");
+        const progressBar = document.getElementById("progress-bar");
+        const playBtn = document.getElementById("play-btn");
+        const playerDiv = document.getElementById("player-div");
+
+        // --- PLAYLIST (MATCHED TO YOUR GITHUB PHOTOS) ---
+        const songs = [
+            { 
+                name: "LEVELS", 
+                path: "music/Levels.mp3", // Capital L
+                img: "levels.jpeg" 
+            },
+            { 
+                name: "INVINCIBLE", 
+                path: "music/Invincible_1.mp3", // Capital I (This was the problem!)
+                img: "invincible.jpeg" 
+            }
+        ];
+
+        let index = 0;
+        let isPlaying = false;
+
+        function togglePlay() {
+            if (isPlaying) pauseSong();
+            else playSong();
+        }
+
+        function playSong() {
+            isPlaying = true;
+            playerDiv.classList.add('playing');
+            playBtn.innerText = "⏸";
+            audio.play().catch(err => {
+                alert("Cannot find: " + songs[index].path + "\nCheck spelling on GitHub!");
+            });
+        }
+
+        function pauseSong() {
+            isPlaying = false;
+            playerDiv.classList.remove('playing');
+            playBtn.innerText = "▶";
+            audio.pause();
+        }
+
+        function loadSong(song) {
+            title.innerText = song.name;
+            cover.src = song.img;
+            audio.src = song.path;
+            audio.load();
+        }
+
+        function nextSong() {
+            index = (index + 1) % songs.length;
+            loadSong(songs[index]);
+            playSong();
+        }
+
+        function prevSong() {
+            index = (index - 1 + songs.length) % songs.length;
+            loadSong(songs[index]);
+            playSong();
+        }
+
+        audio.ontimeupdate = (e) => {
+            const { duration, currentTime } = e.srcElement;
+            if (duration) progressBar.style.width = `${(currentTime / duration) * 100}%`;
+        };
+
+        audio.onended = nextSong;
+
+    </script>
+</body>
+</html>
