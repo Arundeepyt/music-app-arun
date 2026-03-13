@@ -5,12 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arun Music Pro</title>
     <style>
-        body { background: #080808; color: white; text-align: center; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .player { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); padding: 40px; border-radius: 30px; width: 320px; border: 1px solid rgba(255, 255, 255, 0.1); }
-        img { width: 220px; height: 220px; border-radius: 20px; object-fit: cover; margin-bottom: 20px; }
+        body { background: #080808; color: white; text-align: center; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        .player { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); padding: 40px; border-radius: 30px; width: 320px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        img { width: 220px; height: 220px; border-radius: 20px; object-fit: cover; margin-bottom: 20px; transition: 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        img:hover { transform: scale(1.05); }
+        h2 { font-weight: 300; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; color: #00fff2; text-shadow: 0 0 10px #00fff2; }
+        
+        /* Cyberpunk Progress Line */
         .progress-container { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); margin: 30px 0; cursor: pointer; border-radius: 10px; }
         .progress-bar { height: 100%; width: 0%; background: #00fff2; box-shadow: 0 0 15px #00fff2; border-radius: 10px; transition: width 0.1s linear; }
-        button { padding: 15px; font-size: 20px; cursor: pointer; border: none; border-radius: 50%; width: 60px; height: 60px; margin: 0 5px; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: grad 5s infinite; color: white; }
+
+        .controls { display: flex; justify-content: center; gap: 10px; }
+        button { padding: 15px; font-size: 22px; cursor: pointer; border: none; border-radius: 50%; width: 65px; height: 65px; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: grad 5s infinite; color: white; transition: 0.3s; }
+        button:hover { transform: scale(1.1); box-shadow: 0 0 20px rgba(35, 166, 213, 0.6); }
+        
         @keyframes grad { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
     </style>
 </head>
@@ -19,6 +27,7 @@
     <div class="player">
         <img src="levels.jpeg" id="cover">
         <h2 id="title">LEVELS</h2>
+        
         <div class="progress-container" id="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
         </div>
@@ -37,31 +46,62 @@
         const title = document.getElementById("title");
         const cover = document.getElementById("cover");
         const progressBar = document.getElementById("progress-bar");
+        const progressContainer = document.getElementById("progress-container");
 
-        // UPDATED FOLDER PATH HERE TOO
+        // --- PLAYLIST SECTION ---
+        // Just add a comma and copy the { } block to add more!
         const songs = [
-            { name: "LEVELS", path: "music/Levels.mp3", img: "levels.jpeg" }
+            { 
+                name: "LEVELS", 
+                path: "music/Levels.mp3", 
+                img: "levels.jpeg" 
+            }
+            /* Future Song Template:
+            ,{ 
+                name: "INVINCIBLE", 
+                path: "music/invincible_1.mp3", 
+                img: "invincible.jpeg" 
+            } 
+            */
         ];
 
         let index = 0;
 
+        // 1. Update Progress Line
         audio.ontimeupdate = (e) => {
             const { duration, currentTime } = e.srcElement;
             if (duration) {
-                // Fixed the backticks here
                 progressBar.style.width = `${(currentTime / duration) * 100}%`;
             }
         };
 
+        // 2. Click Line to Seek
+        progressContainer.onclick = (e) => {
+            const width = progressContainer.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+            audio.currentTime = (clickX / width) * duration;
+        };
+
+        // 3. Controls
         function playSong() { audio.play(); }
         function pauseSong() { audio.pause(); }
+
         function nextSong() {
             index = (index + 1) % songs.length;
-            title.innerText = songs[index].name;
-            cover.src = songs[index].img;
-            audio.src = songs[index].path;
+            loadSong(songs[index]);
             audio.play();
         }
+
+        function loadSong(song) {
+            title.innerText = song.name;
+            cover.src = song.img;
+            audio.src = song.path;
+        }
+
+        // 4. Auto-Play Next Song
+        audio.onended = nextSong;
+
     </script>
 </body>
 </html>
