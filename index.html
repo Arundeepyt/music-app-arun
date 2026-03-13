@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arundeep Music App | Pro</title>
+    <title>Arundeep Music App | Storage Access</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { background: #080808; color: white; text-align: center; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        body { background: #080808; color: white; text-align: center; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         
         .player { 
             background: rgba(255, 255, 255, 0.05); 
@@ -27,34 +27,39 @@
 
         @keyframes logoGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        img { 
+        #cover { 
             width: 200px; height: 200px; border-radius: 20px; object-fit: cover; 
-            margin-bottom: 15px; transition: 0.4s ease; border: 1px solid rgba(0, 255, 242, 0.3);
+            margin-bottom: 15px; border: 1px solid rgba(0, 255, 242, 0.3); transition: 0.4s;
         }
         
-        .playing img { transform: scale(1.05); box-shadow: 0 0 20px #00fff2; animation: rotate 10s linear infinite; }
-        @keyframes rotate { from { transform: rotate(0deg) scale(1.05); } to { transform: rotate(360deg) scale(1.05); } }
+        .playing #cover { box-shadow: 0 0 20px #00fff2; transform: scale(1.03); }
 
         h2 { font-weight: 300; font-size: 16px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
 
         .progress-container { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); margin: 20px 0; cursor: pointer; border-radius: 10px; }
         .progress-bar { height: 100%; width: 0%; background: #00fff2; box-shadow: 0 0 15px #00fff2; border-radius: 10px; }
 
-        .controls { display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .controls { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 10px; }
         
-        button, .file-label { 
+        /* This styles the folder button */
+        .file-label { 
+            cursor: pointer; width: 45px; height: 45px; border-radius: 50%; 
+            background: rgba(255,255,255,0.1); display: flex; align-items: center; 
+            justify-content: center; color: #00fff2; transition: 0.3s; font-size: 18px;
+        }
+
+        button { 
             cursor: pointer; border: none; border-radius: 50%; color: white; 
             background: rgba(255,255,255,0.1); transition: 0.3s; 
             display: flex; align-items: center; justify-content: center;
         }
 
-        .btn-main { width: 60px; height: 60px; font-size: 20px; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5); background-size: 400%; animation: grad 5s infinite; }
-        .btn-side, .file-label { width: 40px; height: 40px; font-size: 14px; }
+        .btn-main { width: 60px; height: 60px; font-size: 20px; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5); background-size: 400%; }
+        .btn-side { width: 45px; height: 45px; font-size: 16px; }
         
-        .file-label:hover, button:hover { background: #00fff2; color: black; box-shadow: 0 0 15px #00fff2; }
+        button:hover, .file-label:hover { background: #00fff2; color: black; box-shadow: 0 0 15px #00fff2; }
+        
         input[type="file"] { display: none; }
-
-        @keyframes grad { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
     </style>
 </head>
 <body>
@@ -72,14 +77,14 @@
         <audio id="main-audio" src="music/Levels.mp3"></audio> 
         
         <div class="controls">
-            <label class="file-label" title="Play song from phone">
+            <label class="file-label">
                 <i class="fa-solid fa-folder-open"></i>
                 <input type="file" id="file-input" accept="audio/*">
             </label>
+
             <button class="btn-side" onclick="prevSong()">⏮</button>
             <button class="btn-main" id="play-btn" onclick="togglePlay()">▶</button>
             <button class="btn-side" onclick="nextSong()">⏭</button>
-            <button class="btn-side" onclick="downloadSong()"><i class="fa-solid fa-download"></i></button>
         </div>
     </div>
 
@@ -100,15 +105,16 @@
         let index = 0;
         let isPlaying = false;
 
-        // --- NEW: Phone File Logic ---
+        // When you pick a file from your phone
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const fileURL = URL.createObjectURL(file);
-                // Create a temporary song object
-                const userSong = { name: file.name.replace(/\.[^/.]+$/, ""), path: fileURL, img: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&q=80&w=200&h=200" };
-                
-                // Add to playlist and play
+                const userSong = { 
+                    name: file.name.split('.')[0], 
+                    path: fileURL, 
+                    img: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=200&h=200&fit=crop" 
+                };
                 songs.push(userSong);
                 index = songs.length - 1;
                 loadSong(userSong);
@@ -121,14 +127,14 @@
         function playSong() {
             isPlaying = true;
             playerDiv.classList.add('playing');
-            playBtn.innerHTML = "⏸";
-            audio.play().catch(e => alert("Please pick a song first or check the path!"));
+            playBtn.innerText = "⏸";
+            audio.play();
         }
 
         function pauseSong() {
             isPlaying = false;
             playerDiv.classList.remove('playing');
-            playBtn.innerHTML = "▶";
+            playBtn.innerText = "▶";
             audio.pause();
         }
 
@@ -140,13 +146,6 @@
 
         function nextSong() { index = (index + 1) % songs.length; loadSong(songs[index]); playSong(); }
         function prevSong() { index = (index - 1 + songs.length) % songs.length; loadSong(songs[index]); playSong(); }
-
-        function downloadSong() {
-            const link = document.createElement('a');
-            link.href = audio.src;
-            link.download = songs[index].name + ".mp3";
-            link.click();
-        }
 
         audio.ontimeupdate = (e) => {
             const { duration, currentTime } = e.srcElement;
