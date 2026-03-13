@@ -1,0 +1,84 @@
+body {
+    background: #080808; /* Deeper dark */
+    color: white;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.player {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px); /* Frosty glass effect */
+    padding: 40px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 
+                0 0 20px rgba(255, 0, 150, 0.2); /* Soft neon glow */
+    width: 320px;
+}
+
+img {
+    width: 220px;
+    height: 220px;
+    border-radius: 20px;
+    object-fit: cover;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease;
+}
+
+img:hover {
+    transform: scale(1.05); /* Slight zoom on hover */
+}
+
+h2 {
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+}
+
+/* Animated Gradient Buttons */
+button {
+    padding: 12px 25px;
+    margin: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-weight: bold;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradientBG 5s ease infinite;
+    transition: 0.3s transform;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(231, 60, 126, 0.4);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/* The Color Animation */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Customizing the default audio bar to look cleaner */
+audio {
+    width: 100%;
+    height: 35px;
+    margin: 20px 0;
+    filter: invert(100%) hue-rotate(180deg) brightness(1.5); /* Makes standard player match dark theme */
+}
