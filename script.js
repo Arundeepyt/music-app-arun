@@ -1,51 +1,38 @@
-console.log("JavaScript connected successfully!");
-
 const audio = document.getElementById("main-audio");
 const title = document.getElementById("title");
 const cover = document.getElementById("cover");
+const progressBar = document.getElementById("progress-bar");
 
-// List of songs - Make sure these files exist in your 'music' folder!
-const songList = [
-    {
-        name: "LEVELS",
-        path: "music/levels.mp3",
-        image: "levels.jpeg"
-    },
-    {
-        name: "SONG TWO",
-        path: "music/song2.mp3", // Change this to a real filename you have
-        image: "cover2.jpg"      // Change this to a real filename you have
+const songs = [
+    { 
+        name: "LEVELS", 
+        path: "music/Levels.mp3", 
+        img: "levels.jpeg" 
     }
 ];
 
-let songIndex = 0;
+let index = 0;
 
-function loadSong(song) {
-    title.innerText = song.name;
-    audio.src = song.path;
-    cover.src = song.image;
-}
+// Update the progress line
+audio.addEventListener('timeupdate', () => {
+    if (audio.duration) {
+        const percent = (audio.currentTime / audio.duration) * 100;
+        progressBar.style.width = percent + "%";
+    }
+});
 
 function playSong() {
-    console.log("Playing...");
-    audio.play().catch(err => console.log("Playback error:", err));
+    audio.play();
 }
 
 function pauseSong() {
-    console.log("Paused.");
     audio.pause();
 }
 
 function nextSong() {
-    songIndex++;
-
-    if (songIndex >= songList.length) {
-        songIndex = 0;
-    }
-
-    loadSong(songList[songIndex]);
-    playSong();
+    index = (index + 1) % songs.length;
+    title.innerText = songs[index].name;
+    cover.src = songs[index].img;
+    audio.src = songs[index].path;
+    audio.play();
 }
-
-// Automatically play next song when one ends
-audio.addEventListener('ended', nextSong);
