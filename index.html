@@ -3,115 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arundeep | Aesthetic Player</title>
+    <title>Arun Deep | RGB Pulse Player</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
 
     <style>
-        :root {
-            --accent: #00fff2;
-            --bg: #0a0a0c;
-            --panel: rgba(20, 20, 25, 0.7);
+        /* --- DYNAMIC COLOR ANIMATION --- */
+        @keyframes rgbGlow {
+            0% { border-color: #00fff2; box-shadow: 0 0 20px #00fff2; color: #00fff2; }
+            33% { border-color: #ff00ff; box-shadow: 0 0 20px #ff00ff; color: #ff00ff; }
+            66% { border-color: #ffff00; box-shadow: 0 0 20px #ffff00; color: #ffff00; }
+            100% { border-color: #00fff2; box-shadow: 0 0 20px #00fff2; color: #00fff2; }
+        }
+
+        @keyframes bgShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         body { 
-            background: var(--bg); 
-            color: white; 
-            font-family: 'Inter', 'Segoe UI', sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            background: #050505; color: white; font-family: 'Poppins', sans-serif; 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; margin: 0; overflow: hidden;
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #000000);
+            background-size: 400% 400%; animation: bgShift 10s ease infinite;
         }
         
         .player { 
-            background: var(--panel); 
-            backdrop-filter: blur(30px); 
-            padding: 40px; 
-            border-radius: 50px; 
-            width: 300px; 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            box-shadow: 0 40px 100px rgba(0,0,0,0.6); 
-            text-align: center;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px); 
+            padding: 40px; border-radius: 40px; width: 310px; text-align: center;
+            border: 2px solid #00fff2; 
+            animation: rgbGlow 8s linear infinite; /* Player border glows & changes */
         }
 
         .app-logo {
-            font-size: 10px; font-weight: 700; letter-spacing: 8px; margin-bottom: 30px;
-            opacity: 0.5; text-transform: uppercase;
-        }
-
-        /* --- AESTHETIC COVER ART --- */
-        .img-area {
-            position: relative;
-            width: 240px; height: 240px;
-            margin: 0 auto 30px;
+            font-size: 11px; font-weight: 900; letter-spacing: 5px; margin-bottom: 25px;
+            opacity: 0.8; text-transform: uppercase; color: #fff;
         }
 
         #cover { 
-            width: 100%; height: 100%; border-radius: 40px; 
-            object-fit: cover; 
-            transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            width: 200px; height: 200px; border-radius: 50%; object-fit: cover; 
+            border: 4px solid #fff; transition: 0.5s; margin-bottom: 20px;
         }
         
         .playing #cover { 
-            transform: scale(1.05); 
-            box-shadow: 0 20px 50px rgba(0, 255, 242, 0.2); 
+            animation: rotate 10s linear infinite;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
         }
 
-        h2 { font-weight: 500; font-size: 18px; margin: 0; letter-spacing: -0.5px; }
-        p#artist { font-size: 12px; opacity: 0.4; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        @keyframes rotate { from { transform: rotate(0deg) scale(1.05); } to { transform: rotate(360deg) scale(1.05); } }
 
-        /* --- MINIMAL PROGRESS --- */
-        .progress-container { 
-            width: 100%; height: 4px; background: rgba(255, 255, 255, 0.05); 
-            margin: 35px 0 25px; cursor: pointer; border-radius: 10px; position: relative;
-        }
-        .progress-bar { 
-            height: 100%; width: 0%; background: var(--accent); 
-            border-radius: 10px; box-shadow: 0 0 15px var(--accent);
-            transition: width 0.1s linear;
-        }
+        h2 { font-size: 20px; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* --- SOFT CONTROLS --- */
-        .controls { display: flex; justify-content: space-between; align-items: center; }
+        /* --- GLOWING BUTTONS --- */
+        .controls { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; }
         
         button, .file-label { 
-            cursor: pointer; background: none; border: none; color: white; 
-            font-size: 18px; transition: 0.3s; opacity: 0.6;
+            cursor: pointer; background: rgba(0,0,0,0.5); 
+            border: 2px solid #00fff2; color: #00fff2;
+            width: 50px; height: 50px; border-radius: 50%;
+            font-size: 18px; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            /* Button Glow Animation */
+            animation: rgbGlow 8s linear infinite; 
         }
-
-        .file-label { display: flex; align-items: center; justify-content: center; }
 
         .btn-main { 
-            width: 70px; height: 70px; border-radius: 50%; opacity: 1;
-            background: white; color: black; font-size: 20px;
-            box-shadow: 0 10px 25px rgba(255,255,255,0.2);
+            width: 75px; height: 75px; font-size: 24px;
+            background: white; color: black !important; /* Stand out */
+            border: none; animation: none; 
+            box-shadow: 0 0 30px #fff;
         }
 
-        button:hover, .file-label:hover { opacity: 1; transform: translateY(-2px); }
-        .btn-main:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(255,255,255,0.3); }
-        
-        input[type="file"] { display: none; }
+        button:hover, .file-label:hover { transform: scale(1.15); filter: brightness(1.5); }
 
-        /* VISUALIZER WAVE */
-        #visualizer { width: 100%; height: 30px; opacity: 0.3; }
+        /* --- PROGRESS BAR --- */
+        .progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.1); margin: 25px 0; border-radius: 10px; cursor: pointer; overflow: hidden;}
+        .progress-bar { height: 100%; width: 0%; background: #00fff2; animation: rgbGlow 8s linear infinite; border: none; box-shadow: none; }
+
+        #visualizer { width: 100%; height: 40px; filter: drop-shadow(0 0 8px #00fff2); }
+        input[type="file"] { display: none; }
     </style>
 </head>
 <body>
 
     <div class="player" id="player-div">
-        <div class="app-logo">Arundeep Music</div>
-
-        <div class="img-area">
-            <img src="levels.jpeg" id="cover">
-        </div>
-
+        <div class="app-logo">ARUNDEEP LIVE</div>
+        <img src="levels.jpeg" id="cover">
         <h2 id="title">LEVELS</h2>
-        <p id="artist">Now Playing</p>
 
         <canvas id="visualizer"></canvas>
         
@@ -123,10 +104,10 @@
         
         <div class="controls">
             <label class="file-label"><i class="fa-solid fa-plus"></i><input type="file" id="file-input" accept="audio/*"></label>
-            <button onclick="prevSong()"><i class="fa-solid fa-backward-step"></i></button>
+            <button onclick="prevSong()"><i class="fa-solid fa-backward"></i></button>
             <button class="btn-main" id="play-btn" onclick="togglePlay()"><i class="fa-solid fa-play"></i></button>
-            <button onclick="nextSong()"><i class="fa-solid fa-forward-step"></i></button>
-            <button onclick="downloadSong()"><i class="fa-solid fa-heart"></i></button>
+            <button onclick="nextSong()"><i class="fa-solid fa-forward"></i></button>
+            <button onclick="downloadSong()"><i class="fa-solid fa-download"></i></button>
         </div>
     </div>
 
@@ -156,7 +137,7 @@
             source = audioContext.createMediaElementSource(audio);
             source.connect(analyzer);
             analyzer.connect(audioContext.destination);
-            analyzer.fftSize = 128;
+            analyzer.fftSize = 64;
             draw();
         }
 
@@ -165,13 +146,13 @@
             const dataArray = new Uint8Array(bufferLength);
             analyzer.getByteFrequencyData(dataArray);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            let barWidth = (canvas.width / bufferLength) * 2.5;
+            let barWidth = (canvas.width / bufferLength) * 2;
             let x = 0;
             for (let i = 0; i < bufferLength; i++) {
-                let barHeight = dataArray[i] / 6;
-                ctx.fillStyle = `rgba(255, 255, 255, ${barHeight / 50})`;
-                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                x += barWidth + 1;
+                let barHeight = dataArray[i] / 4;
+                ctx.fillStyle = isPlaying ? (i % 2 === 0 ? '#00fff2' : '#ff00ff') : '#444';
+                ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
+                x += barWidth;
             }
             requestAnimationFrame(draw);
         }
@@ -190,10 +171,6 @@
                         art = `data:${pic.format};base64,${window.btoa(base64)}`;
                     }
                     songs.push({ name: file.name.split('.')[0], path: fileURL, img: art });
-                    index = songs.length - 1; loadSong(songs[index]); playSong();
-                },
-                onError: () => { 
-                    songs.push({ name: file.name.split('.')[0], path: fileURL, img: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=300" });
                     index = songs.length - 1; loadSong(songs[index]); playSong();
                 }
             });
@@ -222,6 +199,7 @@
         function loadSong(s) { title.innerText = s.name; cover.src = s.img; audio.src = s.path; }
         function nextSong() { index = (index + 1) % songs.length; loadSong(songs[index]); playSong(); }
         function prevSong() { index = (index - 1 + songs.length) % songs.length; loadSong(songs[index]); playSong(); }
+        function downloadSong() { const a = document.createElement('a'); a.href = audio.src; a.download = title.innerText; a.click(); }
 
         audio.ontimeupdate = (e) => {
             const { duration, currentTime } = e.srcElement;
